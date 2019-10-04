@@ -2,7 +2,7 @@ package com.datly.imagechallenge.data.model
 
 import java.lang.StringBuilder
 
-data class ItemModel(
+data class Image(
     val id: String,
     val title: String,
     val description: String,
@@ -10,7 +10,7 @@ data class ItemModel(
 
     override fun toString(): String {
         var sb = StringBuilder()
-        appendString(sb, "Image Item [")
+        appendString(sb, "Image [")
         appendString(sb, "ID = $id" )
         appendString(sb, "TITLE = $title")
         appendString(sb, "DESCRIPTION = $description")

@@ -1,6 +1,7 @@
 package com.datly.imagechallenge.data
 
-class ItemRepository {
+class ImageRepository {
+
 
 
 }
