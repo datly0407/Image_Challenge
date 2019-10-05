@@ -1,12 +1,18 @@
 package com.datly.imagechallenge.data.model
 
+import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.lang.StringBuilder
 
 data class Image(
+    @SerializedName("id")
     val id: String,
+    @SerializedName("title")
     val title: String,
+    @SerializedName("description")
     val description: String,
-    val url_link: String) {
+    @SerializedName("link")
+    val url_link: String): Serializable, Cloneable {
 
     override fun toString(): String {
         var sb = StringBuilder()
@@ -24,3 +30,8 @@ data class Image(
         builder.append(data + System.lineSeparator())
     }
 }
+
+data class Images (
+    @SerializedName("data")
+    val images: List<Image>
+)

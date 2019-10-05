@@ -4,6 +4,5 @@
     <item
         android:id="@+id/action_search"
         android:title="Test"
-        android:
-        />
+    />
 </menu>
