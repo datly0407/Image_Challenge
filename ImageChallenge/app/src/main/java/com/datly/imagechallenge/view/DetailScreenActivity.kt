@@ -32,6 +32,12 @@ class DetailScreenActivity: AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        //set custom exit animation
+        overridePendingTransition(R.anim.no_animation, R.anim.fade_out)
+    }
+
     private fun setUpView() {
         val bundle = intent.extras
 

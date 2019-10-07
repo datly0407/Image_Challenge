@@ -1,19 +1,11 @@
 package com.datly.imagechallenge.view
 
-import android.app.ActivityOptions
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.transition.Slide
-import android.view.Gravity
 import android.view.Menu
 import android.view.View
-import android.view.animation.DecelerateInterpolator
-import android.widget.AbsListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -147,5 +139,7 @@ class MainActivity: AppCompatActivity() {
             putExtra(EXTRA_IMAGE_TITLE, imageTitle)
         }
         startActivity(intent)
+        //set custom enter animation
+        overridePendingTransition(R.anim.fade_in, R.anim.no_animation)
     }
 }
