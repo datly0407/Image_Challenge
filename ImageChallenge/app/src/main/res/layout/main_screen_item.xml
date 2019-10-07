@@ -4,7 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card_view_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/card_view_container_layout_height"
+    android:layout_margin="@dimen/card_view_container_layout_margin"
+    app:cardCornerRadius="@dimen/card_view_container_card_corner_radius"
+    app:cardElevation="@dimen/card_view_container_card_elevation">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,7 +17,8 @@
         <ImageView
             android:id="@+id/item_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/item_image_layout_height"
+            android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
         />
@@ -23,9 +27,13 @@
             android:id="@+id/item_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/item_image"
-            app:layout_constraintStart_toStartOf="parent"
             android:includeFontPadding="false"
+            android:textSize="@dimen/item_description_text_size"
+            android:layout_marginStart="@dimen/item_description_margin_start"
+            android:paddingEnd="@dimen/item_description_padding_end"
+            app:layout_constraintTop_toBottomOf="@+id/item_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
         />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

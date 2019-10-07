@@ -1,68 +1,151 @@
 package com.datly.imagechallenge.view
 
+import android.app.ActivityOptions
+import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.transition.Slide
+import android.view.Gravity
 import android.view.Menu
-import android.widget.Toast
+import android.view.View
+import android.view.animation.DecelerateInterpolator
+import android.widget.AbsListView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.datly.imagechallenge.R
-import com.datly.imagechallenge.data.ImageRepository
-import com.datly.imagechallenge.data.model.Image
-import com.datly.imagechallenge.data.model.Images
+import com.datly.imagechallenge.data.ImageRepositoryFactory
+import com.datly.imagechallenge.data.model.ImageList
 import com.datly.imagechallenge.view.adapter.MainScreenAdapter
-import com.datly.imagechallenge.viewmodel.ImageViewModel
+import com.datly.imagechallenge.viewmodel.MainActivityViewModel
+import com.datly.imagechallenge.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
+/**
+ * First screen of the application, it will display a list of images/titles
+ * related to the searchTerm that user enter.
+ * @author: Dat Ly
+ * Date: 10/04/2019
+ */
 class MainActivity: AppCompatActivity() {
 
-    private lateinit var imageList: List<Image>
-    private lateinit var imageViewModel: ImageViewModel
+    private var currentPage = 1
+    private var searchTerm = ""
+
+    private lateinit var mainActivityViewModel: MainActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        ImageRepository.getInstance().init()
 
-        imageViewModel = ViewModelProviders.of(this).get(ImageViewModel::class.java)
-
+        mainActivityViewModel = ViewModelProviders.of(
+            this,
+            ViewModelFactory(ImageRepositoryFactory.createImageRepository())).get(MainActivityViewModel::class.java)
         setUpView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bind()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_menu_bar, menu)
 
-        return super.onCreateOptionsMenu(menu)
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView
+        searchView.queryHint = resources.getString(R.string.search_query_hint)
+
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextChange(newText: String?): Boolean {
+                currentPage = 1
+                /*
+                 * Need to remove RV when searching new term
+                 */
+                mainActivityViewModel.getImageList(-1, " ")
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                /*
+                 * Pass the query that user entered to ViewModel
+                 * in order to fetch data from endpoint
+                 */
+                if (!query.isNullOrEmpty()) {
+                    searchTerm = query
+                    mainActivityViewModel.getImageList(currentPage, searchTerm)
+                }
+
+                searchItem.collapseActionView()
+                main_screen_spinner.visibility = View.VISIBLE
+                return false
+            }
+        })
+
+        return true
     }
 
+    /**
+     * Set up all necessary UI components
+     */
     private fun setUpView() {
-        imageViewModel.fetchImageListObservable(1, "cats")?.observe(
-            this,
-            Observer<Images>{ data ->
-                val mainScreenAdapter = MainScreenAdapter(::onImageClickCallBack, data)
-                val layoutManager = LinearLayoutManager(this)
-                rv_item.layoutManager = layoutManager
-                rv_item.adapter = mainScreenAdapter
-            })
+        val layoutManager = LinearLayoutManager(this)
+        rv_item.layoutManager = layoutManager
+        rv_item.addOnScrollListener(object: RecyclerView.OnScrollListener() {
 
-//        startObserveData(mainScreenAdapter)
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (layoutManager.findLastVisibleItemPosition() == layoutManager.itemCount - 1) {
+                    //We have reached the end of the RecyclerView
+                    //move to next page of the gallery
+                    main_screen_spinner.visibility = View.VISIBLE
+                    currentPage++
+                    mainActivityViewModel.getImageList(currentPage, searchTerm)
+                }
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        })
     }
 
-    private fun onImageClickCallBack(position: Int) {
-        Toast.makeText(
-            this,
-            "$position",
-            Toast.LENGTH_SHORT
-        ).show()
+    /**
+     * Set the owner to MainActivity and
+     * start observing on ViewModel
+     */
+    private fun bind() {
+        //observe ImageList
+        mainActivityViewModel.imageListLiveData.observe(this, Observer {
+            fetchImageList(it)
+        })
     }
 
-//    private fun startObserveData(adapter: MainScreenAdapter) {
-//        imageViewModel.fetchImageListObservable(1, "cats")?.observe(
-//            this,
-//            Observer<Images>{ data ->
-//
-//            })
-//    }
+    /**
+     * Receive the list of image from ViewModel and update
+     * the UI accordingly based on the returned data
+     * @param otherImageList: list of image
+     */
+    private fun fetchImageList(otherImageList: ImageList) {
+        //display result data from ViewModel
+        val adapter = MainScreenAdapter(
+            ::onImageClickCallback,
+            otherImageList,
+            main_screen_spinner)
+        rv_item.adapter = adapter
+    }
+
+    /**
+     * Callback method when user click on any item of RecyclerView
+     * @param imageUrl: link to image
+     * @param imageTitle: title of chosen image
+     */
+    private fun onImageClickCallback(imageUrl: String, imageTitle: String) {
+        val intent = Intent(this, DetailScreenActivity::class.java).apply {
+            putExtra(EXTRA_IMAGE_URL, imageUrl)
+            putExtra(EXTRA_IMAGE_TITLE, imageTitle)
+        }
+        startActivity(intent)
+    }
 }

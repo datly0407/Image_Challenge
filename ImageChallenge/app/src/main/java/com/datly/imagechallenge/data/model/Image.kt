@@ -4,13 +4,18 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.lang.StringBuilder
 
+/**
+ * POJO class uses to store data when loaded from server
+ * @author: Dat Ly
+ * Date: 10/04/2019
+ */
 data class Image(
     @SerializedName("id")
     val id: String,
     @SerializedName("title")
     val title: String,
-    @SerializedName("description")
-    val description: String,
+    @SerializedName("cover")
+    val cover: String,
     @SerializedName("link")
     val url_link: String): Serializable, Cloneable {
 
@@ -19,7 +24,7 @@ data class Image(
         appendString(sb, "Image [")
         appendString(sb, "ID = $id" )
         appendString(sb, "TITLE = $title")
-        appendString(sb, "DESCRIPTION = $description")
+        appendString(sb, "COVER = $cover")
         appendString(sb, "URL_LINK = $url_link")
         appendString(sb, "]")
 
@@ -31,7 +36,7 @@ data class Image(
     }
 }
 
-data class Images (
+data class ImageList (
     @SerializedName("data")
-    val images: List<Image>
+    val imageList: List<Image>
 )

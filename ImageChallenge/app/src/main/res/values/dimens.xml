@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_view_container_layout_height">500dp</dimen>
+    <dimen name="card_view_container_layout_margin">12dp</dimen>
+    <dimen name="card_view_container_card_corner_radius">15dp</dimen>
+    <dimen name="card_view_container_card_elevation">10dp</dimen>
+    <dimen name="item_image_layout_height">400dp</dimen>
+    <dimen name="item_description_text_size">20dp</dimen>
+    <dimen name="item_description_margin_start">25dp</dimen>
+    <dimen name="item_description_padding_end">25dp</dimen>
+
+    <dimen name="frame_container_margin_start">24dp</dimen>
+    <dimen name="frame_container_margin_top">50dp</dimen>
+    <dimen name="title_view_text_size">25dp</dimen>
+    <dimen name="title_view_margin_top">30dp</dimen>
+    <dimen name="title_view_padding_bottom">30dp</dimen>
+    <dimen name="title_view_margin_start">25dp</dimen>
+    <dimen name="title_view_padding_end">25dp</dimen>
+</resources>
