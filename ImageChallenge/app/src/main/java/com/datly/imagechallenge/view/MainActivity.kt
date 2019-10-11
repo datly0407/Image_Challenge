@@ -17,6 +17,7 @@ import com.datly.imagechallenge.view.adapter.MainScreenAdapter
 import com.datly.imagechallenge.viewmodel.MainActivityViewModel
 import com.datly.imagechallenge.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * First screen of the application, it will display a list of images/titles
@@ -29,15 +30,22 @@ class MainActivity: AppCompatActivity() {
     private var currentPage = 1
     private var searchTerm = ""
 
-    private lateinit var mainActivityViewModel: MainActivityViewModel
+    //[START] - inject object into Activity using DI
+    private val mainActivityViewModel: MainActivityViewModel by viewModel()
+    //[ORIGINAL]
+//    private lateinit var mainActivityViewModel: MainActivityViewModel
+    //[END]
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainActivityViewModel = ViewModelProviders.of(
-            this,
-            ViewModelFactory(ImageRepositoryFactory.createImageRepository())).get(MainActivityViewModel::class.java)
+        //[START] - we don't need to instantiate ViewModel object,
+        // DI will handle this task for us.
+//        mainActivityViewModel = ViewModelProviders.of(
+//            this,
+//            ViewModelFactory(ImageRepositoryFactory.createImageRepository())).get(MainActivityViewModel::class.java)
+        //[END]
         setUpView()
     }
 
