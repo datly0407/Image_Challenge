@@ -46,6 +46,11 @@ class MainActivity: AppCompatActivity() {
         bind()
     }
 
+    override fun onPause() {
+        super.onPause()
+        unbind()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_menu_bar, menu)
 
@@ -112,6 +117,13 @@ class MainActivity: AppCompatActivity() {
         mainActivityViewModel.imageListLiveData.observe(this, Observer {
             fetchImageList(it)
         })
+    }
+
+    /**
+     * Remove all the observer when our activity is going to be destroy
+     */
+    private fun unbind() {
+        mainActivityViewModel.imageListLiveData.removeObservers(this)
     }
 
     /**

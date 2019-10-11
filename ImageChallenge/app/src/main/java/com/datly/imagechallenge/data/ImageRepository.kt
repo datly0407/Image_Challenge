@@ -20,7 +20,7 @@ class ImageRepository(val imgurApi: ImgurApi) {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( {
                     if (it.body() != null) {
-                        emitter.onNext(it.body()!!)
+                        emitter.onNext(it.body() as ImageList)
                     }
                 }, {
                     it.printStackTrace()
